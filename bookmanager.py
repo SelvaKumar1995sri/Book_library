@@ -8,37 +8,42 @@ from flask import redirect
 from flask_sqlalchemy import SQLAlchemy
 
 
-cwd = os.getcwd()
-print("Current working directory: {0}".format(cwd))
-print("os.getcwd() returns an object of type: {0}".format(type(cwd)))
-
 project_dir = os.path.dirname(os.path.abspath(__file__))
 database_file = "sqlite:///{}".format(os.path.join(project_dir, "bookdatabase.db"))
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = database_file
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///bookdatabase2.db"
 
 db = SQLAlchemy(app)
 
-class Book(db.Model):
+class Book(db.Model):   
     title = db.Column(db.String(80), unique=True, nullable=False, primary_key=True)
 
     def __repr__(self):
         return "<Title: {}>".format(self.title)
 
+
+@app.route('/create')
+def index():
+     db.create_all()
+     return "Created"
+
 @app.route('/', methods=["GET", "POST"])
 def home():
-    books = None
-    if request.form:
-        try:
-            book = Book(title=request.form.get("title"))
-            db.session.add(book)
-            db.session.commit()
-        except Exception as e:
-            print("Failed to add book", str(e))
+    if request.method.upper() == "GET":
+         books = Book.query.all()
+         return render_template("home.html", books=books)
+    else:
+        if request.form:
+            try:
             
-    books = Book.query.all()
-    return render_template("home.html", books=books)
+                book = Book(title=request.form.get("title"))
+                db.session.add(book)
+                db.session.commit()
+            except Exception as e:
+                print("Failed to add book", str(e))
+        books = Book.query.all()
+        return render_template("home.html", books=books)
 
 @app.route("/update", methods=["POST"])
 def update():
