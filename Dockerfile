@@ -1,11 +1,8 @@
-FROM python:3.9.2
-
-WORKDIR /library-docker
-
-COPY requirements.txt requirements.txt
-
-RUN pip3 install -r requirements.txt
-
-COPY . .
-
-CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
+FROM python:3.8-alpine
+COPY ./requirements.txt /app/requirements.txt
+WORKDIR /app
+EXPOSE 5000
+RUN pip install -r requirements.txt
+COPY . /app
+ENTRYPOINT [ "python" ]
+CMD ["bookmanager.py" ]

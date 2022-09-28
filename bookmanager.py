@@ -16,7 +16,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///bookdatabase2.db"
 
 db = SQLAlchemy(app)
 
-class Book(db.Model):   
+class Book(db.Model):
     title = db.Column(db.String(80), unique=True, nullable=False, primary_key=True)
 
     def __repr__(self):
