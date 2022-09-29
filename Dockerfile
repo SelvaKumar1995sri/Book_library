@@ -5,4 +5,4 @@ EXPOSE 5000
 RUN pip install -r requirements.txt
 COPY . /app
 ENTRYPOINT [ "python" ]
-CMD ["bookmanager.py" ]
+CMD ["main.py" ]
